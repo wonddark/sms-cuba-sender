@@ -47,16 +47,25 @@ function Login() {
     const form = new FormData();
     form.append("username", data.email);
     form.append("password", data.password);
-    toast.promise(
-      apiConfig.post("/auth/jwt/login", form, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      }),
-      {
-        pending: "Procesando",
-        success: "Bienvenido",
-        error: "Credenciales incorrectas",
-      }
-    );
+    toast
+      .promise(
+        apiConfig.post("/auth/jwt/login", form, {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        }),
+        {
+          pending: "Procesando",
+          success: "Bienvenido",
+          error: "Credenciales incorrectas",
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        localStorage.setItem(
+          "sms-cuba",
+          JSON.stringify({ token: response.data.access_token })
+        );
+      })
+      .catch((e) => console.log(e));
   };
   return (
     <Form onSubmit={handleSubmit(validateData)}>
