@@ -17,6 +17,7 @@ import {
   Row,
 } from "reactstrap";
 import Select from "react-select";
+import { toast } from "react-toastify";
 
 type MessageSetupFields = {
   message: string;
@@ -24,13 +25,15 @@ type MessageSetupFields = {
 };
 
 const recipients = [
-  { value: "55330470", label: "Osmanys" },
-  { value: "55330471", label: "Osmanys" },
-  { value: "55330472", label: "Osmanys" },
+  { value: "55330476", label: "Osmanys Personal" },
+  { value: "59920283", label: "Leydis Work" },
+  { value: "53793984", label: "Leydis Personal" },
+  { value: "50047972", label: "Osmanys Work" },
 ];
 
 const MIN_MESSAGE_LENGTH = 20;
 const MAX_MESSAGE_LENGTH = 148;
+
 function SendMessage() {
   const [charCount, setCharCount] = useState(0);
   const methods = useForm<MessageSetupFields>({
@@ -58,12 +61,24 @@ function SendMessage() {
     formState: { isValid },
   } = methods;
   const processData = (data: MessageSetupFields) => {
-    data.recipients.forEach((item) =>
-      apiConfig.post(
-        "/messages/create",
-        JSON.stringify({ phone: item, message_body: data.message })
+    toast
+      .promise(
+        Promise.allSettled(
+          data.recipients.map((item) =>
+            apiConfig.post(
+              "/messages/create",
+              JSON.stringify({ phone: item, message_body: data.message })
+            )
+          )
+        ),
+        {
+          pending: "Procesando",
+          success: "¡Hecho!",
+          error: "Algo salió mal",
+        }
       )
-    );
+      .then((response) => console.log(JSON.stringify(response, null, 3)))
+      .catch((error) => console.log(JSON.stringify(error, null, 3)));
   };
   const cancelData = () => {
     reset();
