@@ -13,6 +13,7 @@ import { ToastContainer, Slide } from "react-toastify";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import SendMessage from "./components/SendMessage";
+import Contacts from "./components/Contacts";
 
 function App() {
   const [navExpanded, expandNav] = useState(true);
@@ -20,7 +21,8 @@ function App() {
     login: boolean;
     register: boolean;
     send: boolean;
-  }>({ login: true, register: false, send: false });
+    contacts: boolean;
+  }>({ login: true, register: false, send: false, contacts: false });
   const toggleNav = () => {
     expandNav(!navExpanded);
   };
@@ -40,7 +42,12 @@ function App() {
                 <NavLink
                   active={action.login}
                   onClick={() =>
-                    setAction({ login: true, register: false, send: false })
+                    setAction({
+                      login: true,
+                      register: false,
+                      send: false,
+                      contacts: false,
+                    })
                   }
                 >
                   Login
@@ -50,7 +57,12 @@ function App() {
                 <NavLink
                   active={action.register}
                   onClick={() =>
-                    setAction({ login: false, register: true, send: false })
+                    setAction({
+                      login: false,
+                      register: true,
+                      send: false,
+                      contacts: false,
+                    })
                   }
                 >
                   Register
@@ -60,7 +72,27 @@ function App() {
                 <NavLink
                   active={action.send}
                   onClick={() =>
-                    setAction({ login: false, register: false, send: true })
+                    setAction({
+                      login: false,
+                      register: false,
+                      send: false,
+                      contacts: true,
+                    })
+                  }
+                >
+                  Contacts
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  active={action.send}
+                  onClick={() =>
+                    setAction({
+                      login: false,
+                      register: false,
+                      send: true,
+                      contacts: false,
+                    })
                   }
                 >
                   Send
@@ -72,6 +104,7 @@ function App() {
       </Navbar>
       <Container className="mt-3">
         {action.send && <SendMessage />}
+        {action.contacts && <Contacts />}
         {action.login && <Login />}
         {action.register && <Register />}
       </Container>
