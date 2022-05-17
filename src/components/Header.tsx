@@ -9,16 +9,15 @@ import {
   NavLink,
 } from "reactstrap";
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { changePage } from "../store/pageSlice";
-import { AppState } from "../store";
+import { useAppDispatch, useAppSelector } from "../hooks/store";
 
 function Header() {
-  const dispatch = useDispatch();
-  const { currentPage } = useSelector((state: AppState) => ({
+  const dispatch = useAppDispatch();
+  const { currentPage } = useAppSelector((state) => ({
     currentPage: state.page.current,
   }));
-  const [navExpanded, expandNav] = useState(true);
+  const [navExpanded, expandNav] = useState(false);
   const toggleNav = () => {
     expandNav(!navExpanded);
   };
@@ -46,7 +45,11 @@ function Header() {
         >
           <Nav navbar tabs>
             <NavItem>
-              <NavLink active={currentPage === "LOGIN"} onClick={showLogin}>
+              <NavLink
+                active={currentPage === "LOGIN"}
+                onClick={showLogin}
+                style={{ cursor: "pointer" }}
+              >
                 Login
               </NavLink>
             </NavItem>
@@ -54,6 +57,7 @@ function Header() {
               <NavLink
                 active={currentPage === "REGISTER"}
                 onClick={showRegister}
+                style={{ cursor: "pointer" }}
               >
                 Register
               </NavLink>
@@ -62,12 +66,17 @@ function Header() {
               <NavLink
                 active={currentPage === "CONTACTS"}
                 onClick={showContacts}
+                style={{ cursor: "pointer" }}
               >
                 Contacts
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink active={currentPage === "SEND"} onClick={showSend}>
+              <NavLink
+                active={currentPage === "SEND"}
+                onClick={showSend}
+                style={{ cursor: "pointer" }}
+              >
                 Send
               </NavLink>
             </NavItem>
