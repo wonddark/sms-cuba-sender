@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import sessionReducer from "./sessionSlice";
 import pageReducer from "./pageSlice";
+import contactsReducer from "./contactsSlice";
 
 const store = configureStore({
   reducer: {
     session: sessionReducer,
     page: pageReducer,
+    contacts: contactsReducer,
   },
 });
 
