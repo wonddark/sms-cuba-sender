@@ -17,6 +17,8 @@ import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
 import apiConfig from "../api-config";
+import { useAppDispatch } from "../hooks/store";
+import { login } from "../store/sessionSlice";
 
 type LoginFields = {
   email: string;
@@ -24,6 +26,7 @@ type LoginFields = {
 };
 
 function Login() {
+  const dispatch = useAppDispatch();
   const methods = useForm<LoginFields>({
     defaultValues: {
       email: "",
@@ -59,10 +62,13 @@ function Login() {
         }
       )
       .then((response) => {
-        console.log(response);
-        localStorage.setItem(
-          "sms-cuba",
-          JSON.stringify({ token: response.data.access_token })
+        dispatch(
+          login({
+            user: { id: 1, name: "User" },
+            token: response.data.access_token,
+            tokenRefresh: "",
+            logged: true,
+          })
         );
       })
       .catch((e) => console.log(e));
