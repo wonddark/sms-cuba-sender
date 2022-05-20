@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import {
   Button,
   Card,
-  CardBody,
-  CardHeader,
   CardText,
-  CardTitle,
   Col,
   FormGroup,
   Input,
@@ -13,15 +10,17 @@ import {
   Modal,
   ModalBody,
   ModalHeader,
+  Progress,
   Row,
 } from "reactstrap";
 import ContactForm from "./ContactsForm";
-import { useAppSelector } from "../hooks/store";
+import { useGetContactsQuery } from "../store/services/api";
 
 function Contacts() {
-  const { contacts } = useAppSelector((state) => ({
-    contacts: state.contacts,
-  }));
+  const { data, isLoading } = useGetContactsQuery({
+    page: 1,
+    itemsPerPage: 50,
+  });
   const [showContactForm, setShowContactForm] = useState(false);
   const toggleContactForm = () => {
     setShowContactForm(!showContactForm);
@@ -48,20 +47,20 @@ function Contacts() {
             </Button>
           </InputGroup>
         </FormGroup>
-        <Row xs={1} md={2} lg={3}>
-          {contacts.map((item) => (
-            <Col>
-              <Card color="info" outline>
-                <CardHeader>
-                  <CardTitle>{item.name}</CardTitle>
-                </CardHeader>
-                <CardBody>
-                  <CardText>{item.phone}</CardText>
-                </CardBody>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+        {isLoading && <Progress striped animated color="primary" />}
+        {!isLoading && (
+          <Row xs={1} md={2} lg={3}>
+            {data?.["hydra:member"].map((item) => (
+              <Col className="my-1">
+                <Card color="light" body>
+                  <CardText>
+                    <strong>{item.name}</strong>: {item.phone}
+                  </CardText>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        )}
       </Col>
     </Row>
   );
