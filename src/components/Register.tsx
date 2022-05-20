@@ -17,6 +17,8 @@ import {
   Row,
 } from "reactstrap";
 import React from "react";
+import { useAppDispatch } from "../hooks/store";
+import { changePage } from "../store/pageSlice";
 
 type LoginForm = {
   email: string;
@@ -25,6 +27,7 @@ type LoginForm = {
 };
 
 function Register() {
+  const dispatch = useAppDispatch();
   const methods = useForm<LoginForm>({
     defaultValues: {
       email: "",
@@ -68,6 +71,9 @@ function Register() {
   };
   const cancelData = () => {
     reset();
+  };
+  const switchToLogin = () => {
+    dispatch(changePage("LOGIN"));
   };
   return (
     <Form onSubmit={handleSubmit(saveData)} onReset={cancelData}>
@@ -124,8 +130,14 @@ function Register() {
             />
           </Card>
           <CardFooter className="mt-3 text-end bg-info rounded-2 shadow-sm">
-            <Button type="reset" size="sm" color="light" className="me-2">
-              <i className="bi bi-x-circle-fill me-2" /> Cancelar
+            <Button
+              type="reset"
+              size="sm"
+              color="info"
+              className="me-2"
+              onClick={switchToLogin}
+            >
+              <i className="bi bi-door-open me-2" /> Entrar
             </Button>
             <Button type="submit" size="sm" color="light" disabled={!isValid}>
               <i className="bi bi-check-circle-fill me-2" /> Aplicar
