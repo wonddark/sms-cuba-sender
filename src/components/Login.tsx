@@ -19,6 +19,7 @@ import { toast } from "react-toastify";
 import apiConfig from "../api-config";
 import { useAppDispatch } from "../hooks/store";
 import { login } from "../store/sessionSlice";
+import { changePage } from "../store/pageSlice";
 
 type LoginFields = {
   email: string;
@@ -46,7 +47,6 @@ function Login() {
     formState: { isValid },
   } = methods;
   const validateData = (data: LoginFields) => {
-    console.log(data);
     const form = new FormData();
     form.append("username", data.email);
     form.append("password", data.password);
@@ -72,6 +72,9 @@ function Login() {
         );
       })
       .catch((e) => console.log(e));
+  };
+  const switchToRegister = () => {
+    dispatch(changePage("REGISTER"));
   };
   return (
     <Form onSubmit={handleSubmit(validateData)}>
@@ -113,6 +116,16 @@ function Login() {
             />
           </Card>
           <CardFooter className="mt-3 text-end bg-info rounded-2 shadow-sm">
+            <Button
+              type="button"
+              color="info"
+              size="sm"
+              className="border-0 me-2"
+              onClick={switchToRegister}
+            >
+              <i className="bi bi-plus-circle me-2" />
+              Crear cuenta
+            </Button>
             <Button type="submit" color="light" size="sm" disabled={!isValid}>
               <i className="bi bi-check-circle-fill me-2" />
               Entrar
