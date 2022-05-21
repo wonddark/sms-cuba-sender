@@ -25,19 +25,24 @@ function Header() {
   };
   const showLogin = () => {
     dispatch(changePage("LOGIN"));
+    expandNav(!navExpanded);
   };
   const showRegister = () => {
     dispatch(changePage("REGISTER"));
+    expandNav(!navExpanded);
   };
   const showContacts = () => {
     dispatch(changePage("CONTACTS"));
+    expandNav(!navExpanded);
   };
   const showSend = () => {
     dispatch(changePage("SEND"));
+    expandNav(!navExpanded);
   };
   const closeSession = () => {
     dispatch(logout());
     dispatch(changePage("LOGIN"));
+    expandNav(!navExpanded);
   };
   return (
     <header
@@ -54,30 +59,35 @@ function Header() {
             className="ms-auto justify-content-end"
           >
             <Nav navbar tabs>
-              <NavItem>
-                <NavLink
-                  active={currentPage === "CONTACTS"}
-                  onClick={showContacts}
-                  style={{ cursor: "pointer" }}
-                >
-                  Contactos
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  active={currentPage === "SEND"}
-                  onClick={showSend}
-                  style={{ cursor: "pointer" }}
-                >
-                  Enviar
-                </NavLink>
-              </NavItem>
               {logged && (
-                <NavItem>
-                  <NavLink onClick={closeSession} style={{ cursor: "pointer" }}>
-                    Salir
-                  </NavLink>
-                </NavItem>
+                <>
+                  <NavItem>
+                    <NavLink
+                      active={currentPage === "CONTACTS"}
+                      onClick={showContacts}
+                      style={{ cursor: "pointer" }}
+                    >
+                      Contactos
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink
+                      active={currentPage === "SEND"}
+                      onClick={showSend}
+                      style={{ cursor: "pointer" }}
+                    >
+                      Enviar
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink
+                      onClick={closeSession}
+                      style={{ cursor: "pointer" }}
+                    >
+                      Salir
+                    </NavLink>
+                  </NavItem>
+                </>
               )}
               {!logged && (
                 <>
