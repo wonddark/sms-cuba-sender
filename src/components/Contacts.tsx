@@ -51,7 +51,7 @@ function Contacts() {
         {!isLoading && (
           <Row xs={1} md={2} lg={3}>
             {data?.["hydra:member"].map((item) => (
-              <Col className="my-1">
+              <Col key={item.id} className="my-1">
                 <Card color="light" body>
                   <CardText>
                     <strong>{item.name}</strong>: {item.phone}
