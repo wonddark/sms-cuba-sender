@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { ContactsResponse } from "./response-types";
 import { AppState } from "../index";
-import { LoginParams } from "./params-types";
+import { LoginParams, RegisterParams } from "./params-types";
 
 const api = createApi({
   reducerPath: "api",
@@ -12,7 +12,9 @@ const api = createApi({
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
-      headers.set("Accept", "application/ld+json");
+      !headers.has("Content-Type") &&
+        headers.set("Content-Type", "application/ld+json");
+      !headers.has("Accept") && headers.set("Accept", "application/ld+json");
       return headers;
     },
   }),
@@ -22,7 +24,17 @@ const api = createApi({
         url: "/login",
         method: "POST",
         body: params,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }),
+    }),
+    register: builder.mutation({
+      query: (params: RegisterParams) => ({
+        url: "/register",
+        method: "POST",
+        body: params,
       }),
     }),
     getContacts: builder.query<
@@ -37,5 +49,6 @@ const api = createApi({
   }),
 });
 
-export const { useGetContactsQuery, useLoginMutation } = api;
+export const { useGetContactsQuery, useLoginMutation, useRegisterMutation } =
+  api;
 export default api;

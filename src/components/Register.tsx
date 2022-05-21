@@ -1,8 +1,8 @@
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
-import apiConfig from "../api-config";
 import {
   Button,
   Card,
@@ -16,30 +16,29 @@ import {
   Label,
   Row,
 } from "reactstrap";
-import React from "react";
 import { useAppDispatch } from "../hooks/store";
 import { changePage } from "../store/pageSlice";
+import { useRegisterMutation } from "../store/services/api";
+import { RegisterParams } from "../store/services/params-types";
 
-type LoginForm = {
-  email: string;
-  password: string;
+type LoginForm = RegisterParams & {
   check_password: string;
 };
 
 function Register() {
+  const [runRegister, { isLoading }] = useRegisterMutation();
   const dispatch = useAppDispatch();
   const methods = useForm<LoginForm>({
     defaultValues: {
-      email: "",
       password: "",
       check_password: "",
+      name: "",
+      username: "",
     },
     resolver: yupResolver(
       yup.object({
-        email: yup
-          .string()
-          .required("Requerido")
-          .email("El email debe ser válido"),
+        name: yup.string().required("Requerido"),
+        username: yup.string().required("Requerido"),
         password: yup
           .string()
           .required("Requerido")
@@ -47,7 +46,7 @@ function Register() {
           .max(16, "No más de 16 caracteres"),
       })
     ),
-    mode: "onBlur",
+    mode: "onChange",
   });
   const {
     handleSubmit,
@@ -56,21 +55,17 @@ function Register() {
     formState: { isValid },
   } = methods;
   const saveData = (data: LoginForm) => {
-    console.log(data);
-    toast.promise(
-      apiConfig.post(
-        "/auth/register",
-        JSON.stringify({ email: data.email, password: data.password })
-      ),
-      {
+    toast
+      .promise(runRegister(data), {
         pending: "Procesando",
         success: "¡Listo!",
         error: "Algo falló, vuelve a intentarlo",
-      }
-    );
+      })
+      .then(() => dispatch(changePage("LOGIN")));
   };
   const cancelData = () => {
     reset();
+    dispatch(changePage("LOGIN"));
   };
   const switchToLogin = () => {
     dispatch(changePage("LOGIN"));
@@ -85,11 +80,26 @@ function Register() {
           <Card body color="info" outline className="rounded-3 shadow-sm">
             <Controller
               control={control}
-              name="email"
+              name="name"
               render={({ field, fieldState: { error } }) => (
                 <FormGroup>
-                  <Label>Email</Label>
-                  <Input {...field} type="email" required />
+                  <Label>Nombre</Label>
+                  <Input {...field} type="text" required disabled={isLoading} />
+                  {error && (
+                    <FormFeedback valid={false} className="d-block">
+                      {error.message}
+                    </FormFeedback>
+                  )}
+                </FormGroup>
+              )}
+            />
+            <Controller
+              control={control}
+              name="username"
+              render={({ field, fieldState: { error } }) => (
+                <FormGroup>
+                  <Label>Nombre de usuario</Label>
+                  <Input {...field} type="text" required disabled={isLoading} />
                   {error && (
                     <FormFeedback valid={false} className="d-block">
                       {error.message}
@@ -104,7 +114,12 @@ function Register() {
               render={({ field, fieldState: { error } }) => (
                 <FormGroup>
                   <Label>Contraseña</Label>
-                  <Input {...field} type="password" required />
+                  <Input
+                    {...field}
+                    type="password"
+                    required
+                    disabled={isLoading}
+                  />
                   {error && (
                     <FormFeedback valid={false} className="d-block">
                       {error.message}
@@ -119,7 +134,12 @@ function Register() {
               render={({ field, fieldState: { error } }) => (
                 <FormGroup>
                   <Label>Verificar contraseña</Label>
-                  <Input {...field} type="password" required />
+                  <Input
+                    {...field}
+                    type="password"
+                    required
+                    disabled={isLoading}
+                  />
                   {error && (
                     <FormFeedback valid={false} className="d-block">
                       {error.message}
@@ -136,10 +156,16 @@ function Register() {
               color="info"
               className="me-2"
               onClick={switchToLogin}
+              disabled={isLoading}
             >
               <i className="bi bi-door-open me-2" /> Entrar
             </Button>
-            <Button type="submit" size="sm" color="light" disabled={!isValid}>
+            <Button
+              type="submit"
+              size="sm"
+              color="light"
+              disabled={!isValid || isLoading}
+            >
               <i className="bi bi-check-circle-fill me-2" /> Aplicar
             </Button>
           </CardFooter>
