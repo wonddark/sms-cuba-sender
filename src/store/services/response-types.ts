@@ -1,5 +1,5 @@
 export type LoginResponse = {
-  toke: string;
+  token: string;
   refresh_token: string;
   refresh_token_expiration: number;
 };
