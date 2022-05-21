@@ -16,30 +16,32 @@ import React from "react";
 import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
-import apiConfig from "../api-config";
 import { useAppDispatch } from "../hooks/store";
 import { login } from "../store/sessionSlice";
 import { changePage } from "../store/pageSlice";
+import { useLoginMutation } from "../store/services/api";
+import { LoginResponse } from "../store/services/response-types";
 
 type LoginFields = {
-  email: string;
+  username: string;
   password: string;
 };
 
 function Login() {
+  const [runLogin, { isLoading }] = useLoginMutation();
   const dispatch = useAppDispatch();
   const methods = useForm<LoginFields>({
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
     },
     resolver: yupResolver(
       yup.object({
-        email: yup.string().required("Requerido").email("Email inválido"),
+        username: yup.string().required("Requerido"),
         password: yup.string().required("Requerido"),
       })
     ),
-    mode: "onBlur",
+    mode: "onChange",
   });
   const {
     control,
@@ -47,31 +49,24 @@ function Login() {
     formState: { isValid },
   } = methods;
   const validateData = (data: LoginFields) => {
-    const form = new FormData();
-    form.append("username", data.email);
-    form.append("password", data.password);
     toast
-      .promise(
-        apiConfig.post("/auth/jwt/login", form, {
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        }),
-        {
-          pending: "Procesando",
-          success: "Bienvenido",
-          error: "Credenciales incorrectas",
-        }
-      )
-      .then((response) => {
+      .promise(runLogin(data).unwrap(), {
+        pending: "Cargando",
+        error: "Error",
+        success: "Bienvenido",
+      })
+      .then((response: LoginResponse) => {
         dispatch(
           login({
-            user: { id: 1, name: "User" },
-            token: response.data.access_token,
-            tokenRefresh: "",
+            token: response.token,
+            tokenRefresh: response.refresh_token,
+            tokenRefreshExpiration: response.refresh_token_expiration,
             logged: true,
           })
         );
+        dispatch(changePage("CONTACTS"));
       })
-      .catch((e) => console.log(e));
+      .catch((error) => console.log(error));
   };
   const switchToRegister = () => {
     dispatch(changePage("REGISTER"));
@@ -86,11 +81,11 @@ function Login() {
           <Card body color="info" outline className="rounded-3 shadow-sm">
             <Controller
               control={control}
-              name="email"
+              name="username"
               render={({ field, fieldState: { error } }) => (
                 <FormGroup>
-                  <Label>Email</Label>
-                  <Input {...field} type="email" required />
+                  <Label>Username</Label>
+                  <Input {...field} type="text" required />
                   {error && (
                     <FormFeedback valid={false} className="d-block">
                       {error.message}
@@ -122,11 +117,17 @@ function Login() {
               size="sm"
               className="border-0 me-2"
               onClick={switchToRegister}
+              disabled={isLoading}
             >
               <i className="bi bi-plus-circle me-2" />
               Crear cuenta
             </Button>
-            <Button type="submit" color="light" size="sm" disabled={!isValid}>
+            <Button
+              type="submit"
+              color="light"
+              size="sm"
+              disabled={!isValid || isLoading}
+            >
               <i className="bi bi-check-circle-fill me-2" />
               Entrar
             </Button>
