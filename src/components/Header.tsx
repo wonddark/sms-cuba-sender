@@ -11,11 +11,13 @@ import {
 import React, { useState } from "react";
 import { changePage } from "../store/pageSlice";
 import { useAppDispatch, useAppSelector } from "../hooks/store";
+import { logout } from "../store/sessionSlice";
 
 function Header() {
   const dispatch = useAppDispatch();
-  const { currentPage } = useAppSelector((state) => ({
+  const { currentPage, logged } = useAppSelector((state) => ({
     currentPage: state.page.current,
+    logged: state.session.logged,
   }));
   const [navExpanded, expandNav] = useState(false);
   const toggleNav = () => {
@@ -33,6 +35,10 @@ function Header() {
   const showSend = () => {
     dispatch(changePage("SEND"));
   };
+  const closeSession = () => {
+    dispatch(logout());
+    dispatch(changePage("LOGIN"));
+  };
   return (
     <Navbar light color="light" expand="lg">
       <Container className="d-flex p-0">
@@ -46,29 +52,11 @@ function Header() {
           <Nav navbar tabs>
             <NavItem>
               <NavLink
-                active={currentPage === "LOGIN"}
-                onClick={showLogin}
-                style={{ cursor: "pointer" }}
-              >
-                Login
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                active={currentPage === "REGISTER"}
-                onClick={showRegister}
-                style={{ cursor: "pointer" }}
-              >
-                Register
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
                 active={currentPage === "CONTACTS"}
                 onClick={showContacts}
                 style={{ cursor: "pointer" }}
               >
-                Contacts
+                Contactos
               </NavLink>
             </NavItem>
             <NavItem>
@@ -77,9 +65,38 @@ function Header() {
                 onClick={showSend}
                 style={{ cursor: "pointer" }}
               >
-                Send
+                Enviar
               </NavLink>
             </NavItem>
+            {logged && (
+              <NavItem>
+                <NavLink onClick={closeSession} style={{ cursor: "pointer" }}>
+                  Salir
+                </NavLink>
+              </NavItem>
+            )}
+            {!logged && (
+              <>
+                <NavItem>
+                  <NavLink
+                    active={currentPage === "LOGIN"}
+                    onClick={showLogin}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Entrar
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink
+                    active={currentPage === "REGISTER"}
+                    onClick={showRegister}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Registro
+                  </NavLink>
+                </NavItem>
+              </>
+            )}
           </Nav>
         </Collapse>
       </Container>
