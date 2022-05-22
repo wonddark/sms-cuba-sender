@@ -15,12 +15,16 @@ import {
 } from "reactstrap";
 import ContactForm from "./ContactsForm";
 import { useGetContactsQuery } from "../store/services/api";
+import { useAppSelector } from "../hooks/store";
 
 function Contacts() {
-  const { data, isLoading } = useGetContactsQuery({
+  const { isLoading } = useGetContactsQuery({
     page: 1,
     itemsPerPage: 50,
   });
+  const { contacts } = useAppSelector((state) => ({
+    contacts: state.contacts,
+  }));
   const [showContactForm, setShowContactForm] = useState(false);
   const toggleContactForm = () => {
     setShowContactForm(!showContactForm);
@@ -33,10 +37,7 @@ function Contacts() {
             Agregar/Editar contacto
           </ModalHeader>
           <ModalBody>
-            <ContactForm
-              onCancel={toggleContactForm}
-              onSubmit={toggleContactForm}
-            />
+            <ContactForm toggleDlg={toggleContactForm} />
           </ModalBody>
         </Modal>
         <FormGroup>
@@ -49,13 +50,24 @@ function Contacts() {
         </FormGroup>
         {isLoading && <Progress striped animated color="primary" />}
         {!isLoading && (
-          <Row xs={1} md={2} lg={3}>
-            {data?.["hydra:member"].map((item) => (
+          <Row xs={1} md={2}>
+            {contacts?.["hydra:member"].map((item) => (
               <Col key={item.id} className="my-1">
                 <Card color="light" body>
-                  <CardText>
-                    <strong>{item.name}</strong>: {item.phone}
-                  </CardText>
+                  <Row xs={1} className="justify-content-between">
+                    <Col xs={10}>
+                      <CardText>
+                        <strong>{item.name}</strong>: {item.phone}
+                      </CardText>
+                    </Col>
+                    <Col xs={2} className="text-center">
+                      <Input
+                        type="checkbox"
+                        title="Seleccionar este contacto"
+                        style={{ cursor: "pointer" }}
+                      />
+                    </Col>
+                  </Row>
                 </Card>
               </Col>
             ))}
