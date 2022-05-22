@@ -8,3 +8,8 @@ export type RegisterParams = {
   name: string;
   password: string;
 };
+
+export type ContactsParams = {
+  name: string;
+  phone: string;
+};
