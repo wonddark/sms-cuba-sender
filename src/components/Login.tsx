@@ -17,10 +17,8 @@ import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "../hooks/store";
-import { login } from "../store/sessionSlice";
 import { changePage } from "../store/pageSlice";
 import { useLoginMutation } from "../store/services/api";
-import { LoginResponse } from "../store/services/response-types";
 
 type LoginFields = {
   username: string;
@@ -55,17 +53,7 @@ function Login() {
         error: "Error",
         success: "Bienvenido",
       })
-      .then((response: LoginResponse) => {
-        dispatch(
-          login({
-            token: response.token,
-            tokenRefresh: response.refresh_token,
-            tokenRefreshExpiration: response.refresh_token_expiration,
-            logged: true,
-          })
-        );
-        dispatch(changePage("CONTACTS"));
-      })
+      .then(() => dispatch(changePage("CONTACTS")))
       .catch((error) => console.log(error));
   };
   const switchToRegister = () => {
