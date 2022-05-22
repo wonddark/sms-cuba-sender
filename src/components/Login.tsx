@@ -62,7 +62,7 @@ function Login() {
   return (
     <Form onSubmit={handleSubmit(validateData)}>
       <Row xs={1} className="justify-content-center">
-        <Col md={6}>
+        <Col>
           <CardHeader className="mb-3 bg-info rounded-2 shadow-sm text-white">
             Inicia sesión
           </CardHeader>

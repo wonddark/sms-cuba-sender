@@ -73,7 +73,7 @@ function Register() {
   return (
     <Form onSubmit={handleSubmit(saveData)} onReset={cancelData}>
       <Row xs={1} className="justify-content-center">
-        <Col md={6}>
+        <Col>
           <CardHeader className="mb-3 bg-info rounded-2 shadow-sm text-white">
             Regístrate
           </CardHeader>

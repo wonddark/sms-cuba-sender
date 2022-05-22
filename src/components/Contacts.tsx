@@ -31,7 +31,7 @@ function Contacts() {
   };
   return (
     <Row xs={1} className="justify-content-center">
-      <Col md={6}>
+      <Col>
         <Modal isOpen={showContactForm} toggle={toggleContactForm} centered>
           <ModalHeader className="bg-primary shadow-sm text-light">
             Agregar/Editar contacto
