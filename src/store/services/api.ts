@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { ContactsResponse } from "./response-types";
 import { AppState } from "../index";
-import { LoginParams, RegisterParams } from "./params-types";
+import { ContactsParams, LoginParams, RegisterParams } from "./params-types";
 
 const api = createApi({
   reducerPath: "api",
@@ -19,6 +19,7 @@ const api = createApi({
     },
   }),
   endpoints: (builder) => ({
+    // LOGIN
     login: builder.mutation({
       query: (params: LoginParams) => ({
         url: "/login",
@@ -30,6 +31,7 @@ const api = createApi({
         },
       }),
     }),
+    // REGISTER
     register: builder.mutation({
       query: (params: RegisterParams) => ({
         url: "/register",
@@ -37,6 +39,7 @@ const api = createApi({
         body: params,
       }),
     }),
+    // GET CONTACTS
     getContacts: builder.query<
       ContactsResponse,
       { page: number; itemsPerPage: number }
@@ -46,9 +49,21 @@ const api = createApi({
         params: { page: params.page, itemsPerPage: params.itemsPerPage },
       }),
     }),
+    // POST CONTACT
+    addContact: builder.mutation({
+      query: (params: ContactsParams) => ({
+        url: "/contacts",
+        method: "POST",
+        body: JSON.stringify(params),
+      }),
+    }),
   }),
 });
 
-export const { useGetContactsQuery, useLoginMutation, useRegisterMutation } =
-  api;
+export const {
+  useGetContactsQuery,
+  useLoginMutation,
+  useRegisterMutation,
+  useAddContactMutation,
+} = api;
 export default api;
