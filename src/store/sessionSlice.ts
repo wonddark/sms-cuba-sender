@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import api from "./services/api";
 
 interface SessionState {
   logged: boolean;
@@ -16,12 +17,6 @@ const sessionSlice = createSlice({
   name: "session",
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<SessionState>) => {
-      state.logged = true;
-      state.token = action.payload.token;
-      state.tokenRefresh = action.payload.tokenRefresh;
-      state.tokenRefreshExpiration = action.payload.tokenRefreshExpiration;
-    },
     logout: (state) => {
       state.token = "";
       state.tokenRefresh = "";
@@ -29,7 +24,18 @@ const sessionSlice = createSlice({
       state.tokenRefreshExpiration = 0;
     },
   },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      api.endpoints.login.matchFulfilled,
+      (state, { payload }) => {
+        state.token = payload.token;
+        state.tokenRefresh = payload.refresh_token;
+        state.tokenRefreshExpiration = payload.refresh_token_expiration;
+        state.logged = true;
+      }
+    );
+  },
 });
 
-export const { login, logout } = sessionSlice.actions;
+export const { logout } = sessionSlice.actions;
 export default sessionSlice.reducer;
