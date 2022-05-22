@@ -1,29 +1,48 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-type ContactInfo = {
-  id: number;
-  name: string;
-  phone: string;
+import { createSlice } from "@reduxjs/toolkit";
+import api from "./services/api";
+
+type ContactsState = {
+  "@context": string;
+  "@id": string;
+  "@type": string;
+  "hydra:member": {
+    "@id": string;
+    "@type": string;
+    id: number;
+    name: string;
+    phone: string;
+    user: string;
+    messages: string[];
+  }[];
+  "hydra:totalItems": number;
+  "hydra:view": {
+    "@id": string;
+    "@type": string;
+  };
 };
-export type ContactsState = ContactInfo[];
-const initialState: ContactsState = [];
+
+const initialState: ContactsState = {
+  "@context": "",
+  "@id": "",
+  "@type": "",
+  "hydra:member": [],
+  "hydra:totalItems": 0,
+  "hydra:view": { "@id": "", "@type": "" },
+};
+
 const contactsSlice = createSlice({
   name: "contacts",
   initialState,
-  reducers: {
-    addContact: (state, action: PayloadAction<ContactInfo>) => {
-      state.push(action.payload);
-    },
-    updateContact: (state, action: PayloadAction<ContactInfo>) => {
-      const index = state.findIndex((item) => item.id === action.payload.id);
-      index !== -1 && (state[index] = action.payload);
-    },
-    removeContact: (state, action: PayloadAction<ContactInfo>) => {
-      state = state.filter((item) => item.id !== action.payload.id);
-      return state;
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      api.endpoints.getContacts.matchFulfilled,
+      (state, { payload }) => {
+        state = payload as unknown as ContactsState;
+        return state;
+      }
+    );
   },
 });
 
-export const { addContact, updateContact, removeContact } =
-  contactsSlice.actions;
 export default contactsSlice.reducer;
