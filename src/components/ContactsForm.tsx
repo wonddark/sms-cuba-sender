@@ -11,19 +11,14 @@ import {
   Label,
 } from "reactstrap";
 import React from "react";
-import { useAppDispatch } from "../hooks/store";
-import { addContact } from "../store/contactsSlice";
+import { useAddContactMutation } from "../store/services/api";
+import { toast } from "react-toastify";
+import { ContactsParams } from "../store/services/params-types";
 
-type ContactFields = { id: number; name: string; phone: string };
+type ContactFields = ContactsParams & {};
 
-const ContactForm = ({
-  onCancel,
-  onSubmit,
-}: {
-  onCancel: () => void;
-  onSubmit: () => void;
-}) => {
-  const dispatch = useAppDispatch();
+const ContactForm = ({ toggleDlg }: { toggleDlg: () => void }) => {
+  const [runAddContact, { isLoading }] = useAddContactMutation();
   const methods = useForm<ContactFields>({
     defaultValues: {
       name: "",
@@ -44,12 +39,18 @@ const ContactForm = ({
     formState: { isValid },
   } = methods;
   const saveContact = (data: ContactFields) => {
-    dispatch(addContact(data));
-    onSubmit();
+    toast
+      .promise(runAddContact(data), {
+        pending: "Procesando",
+        success: "¡Hecho!",
+        error: "Algo aha salido mal, or favor inténtalo de nuevo",
+      })
+      .finally();
+    toggleDlg();
   };
   const resetForm = () => {
     reset();
-    onCancel();
+    toggleDlg();
   };
   return (
     <Form onSubmit={handleSubmit(saveContact)} onReset={resetForm}>
@@ -59,7 +60,7 @@ const ContactForm = ({
         render={({ field, fieldState: { error } }) => (
           <FormGroup>
             <Label>Nombre</Label>
-            <Input {...field} />
+            <Input {...field} disabled={isLoading} />
             {error && (
               <FormFeedback valid={false} className="d-block">
                 {error.message}
@@ -74,7 +75,7 @@ const ContactForm = ({
         render={({ field, fieldState: { error } }) => (
           <FormGroup>
             <Label>Teléfono</Label>
-            <Input {...field} type="tel" />
+            <Input {...field} type="tel" disabled={isLoading} />
             {error && (
               <FormFeedback valid={false} className="d-block">
                 {error.message}
@@ -84,10 +85,21 @@ const ContactForm = ({
         )}
       />
       <CardFooter className="p-0 border-0 bg-transparent text-end">
-        <Button type="reset" size="sm" color="secondary" className="me-2">
+        <Button
+          type="reset"
+          size="sm"
+          color="secondary"
+          className="me-2"
+          disabled={isLoading}
+        >
           <i className="bi bi-x-circle-fill me-2" /> Cancelar
         </Button>
-        <Button type="submit" size="sm" color="primary" disabled={!isValid}>
+        <Button
+          type="submit"
+          size="sm"
+          color="primary"
+          disabled={!isValid || isLoading}
+        >
           <i className="bi bi-check-circle-fill me-2" /> Guardar
         </Button>
       </CardFooter>
