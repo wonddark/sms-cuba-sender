@@ -50,7 +50,7 @@ function Contacts() {
         </FormGroup>
         {isLoading && <Progress striped animated color="primary" />}
         {!isLoading && (
-          <Row xs={1} md={2}>
+          <Row xs={1} md={2} xl={3}>
             {contacts?.["hydra:member"].map((item) => (
               <Col key={item.id} className="my-1">
                 <Card color="light" body>
