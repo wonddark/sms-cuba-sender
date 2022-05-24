@@ -40,13 +40,12 @@ const ContactForm = ({ toggleDlg }: { toggleDlg: () => void }) => {
   } = methods;
   const saveContact = (data: ContactFields) => {
     toast
-      .promise(runAddContact(data), {
+      .promise(runAddContact(data).unwrap(), {
         pending: "Procesando",
         success: "¡Hecho!",
         error: "Algo aha salido mal, or favor inténtalo de nuevo",
       })
-      .finally();
-    toggleDlg();
+      .then(() => toggleDlg());
   };
   const resetForm = () => {
     reset();
