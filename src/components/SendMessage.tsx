@@ -18,23 +18,18 @@ import {
 } from "reactstrap";
 import Select from "react-select";
 import { toast } from "react-toastify";
+import { useAppSelector } from "../hooks/store";
 
 type MessageSetupFields = {
   message: string;
   recipients: string[];
 };
 
-const recipients = [
-  { value: "55330476", label: "Osmanys Personal" },
-  { value: "59920283", label: "Leydis Work" },
-  { value: "53793984", label: "Leydis Personal" },
-  { value: "50047972", label: "Osmanys Work" },
-];
-
 const MIN_MESSAGE_LENGTH = 20;
 const MAX_MESSAGE_LENGTH = 148;
 
 function SendMessage() {
+  const contacts = useAppSelector((state) => state.contacts["hydra:member"]);
   const [charCount, setCharCount] = useState(0);
   const methods = useForm<MessageSetupFields>({
     defaultValues: {
@@ -99,13 +94,17 @@ function SendMessage() {
                   <Label>Destinatario(s)</Label>
                   <Select
                     {...field}
-                    value={recipients.filter((item) =>
-                      field.value.some((token) => token === item.value)
+                    value={contacts.filter((item) =>
+                      field.value.some(
+                        (token) => token === item.phone || token === item.name
+                      )
                     )}
-                    options={recipients}
+                    options={contacts}
+                    getOptionLabel={(option) => option.name}
+                    getOptionValue={(option) => option.phone}
                     isMulti
                     onChange={(option) =>
-                      field.onChange(option.map((item) => item.value))
+                      field.onChange(option.map((item) => item.phone))
                     }
                   />
                   {error && (
