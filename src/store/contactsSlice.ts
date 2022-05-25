@@ -23,7 +23,7 @@ type ContactsData = {
 
 type ContactsState = {
   data: ContactsData;
-  selected: { id: string; name: string; phone: string }[];
+  selected: { id: number; name: string; phone: string }[];
 };
 
 const initialState: ContactsState = {
@@ -44,12 +44,13 @@ const contactsSlice = createSlice({
   reducers: {
     addToSelected: (
       state,
-      action: PayloadAction<{ id: string; name: string; phone: string }>
+      action: PayloadAction<{ id: number; name: string; phone: string }>
     ) => {
-      state.selected.push(action.payload);
+      state.selected.every((item) => item.id !== action.payload.id) &&
+        state.selected.push(action.payload);
       return state;
     },
-    removeFromSelected: (state, action: PayloadAction<string>) => {
+    removeFromSelected: (state, action: PayloadAction<number>) => {
       state.selected = state.selected.filter(
         (item) => item.id !== action.payload
       );
