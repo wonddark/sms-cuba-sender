@@ -67,4 +67,5 @@ const contactsSlice = createSlice({
   },
 });
 
+export const { addToSelected, removeFromSelected } = contactsSlice.actions;
 export default contactsSlice.reducer;
