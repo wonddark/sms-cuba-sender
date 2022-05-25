@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import {
   Button,
-  Card,
-  CardText,
   Col,
   FormGroup,
   Input,
@@ -15,6 +13,22 @@ import {
 import ContactForm from "./ContactsForm";
 import { useGetContactsQuery } from "../store/services/api";
 import { useAppSelector } from "../hooks/store";
+import ContactCard from "./ContactCard";
+
+function SelectedCount() {
+  const { selected } = useAppSelector((state) => ({
+    selected: state.contacts.selected,
+  }));
+  if (selected.length > 0) {
+    return (
+      <p className="py-1 px-2 mb-1 fst-italic small text-muted">
+        {selected.length} seleccionados
+      </p>
+    );
+  } else {
+    return <></>;
+  }
+}
 
 function Contacts() {
   useGetContactsQuery({
@@ -22,7 +36,7 @@ function Contacts() {
     itemsPerPage: 50,
   });
   const { contacts } = useAppSelector((state) => ({
-    contacts: state.contacts,
+    contacts: state.contacts.data["hydra:member"],
   }));
   const [showContactForm, setShowContactForm] = useState(false);
   const toggleContactForm = () => {
@@ -64,25 +78,11 @@ function Contacts() {
             </Button>
           </InputGroup>
         </FormGroup>
+        <SelectedCount />
         <Row xs={1} md={2} xl={3}>
-          {contacts?.["hydra:member"].map((item) => (
+          {contacts.map((item) => (
             <Col key={item.id} className="my-1">
-              <Card color="light" body>
-                <Row xs={1} className="justify-content-between">
-                  <Col xs={10}>
-                    <CardText>
-                      <strong>{item.name}</strong>: {item.phone}
-                    </CardText>
-                  </Col>
-                  <Col xs={2} className="text-center">
-                    <Input
-                      type="checkbox"
-                      title="Seleccionar este contacto"
-                      style={{ cursor: "pointer" }}
-                    />
-                  </Col>
-                </Row>
-              </Card>
+              <ContactCard item={item} />
             </Col>
           ))}
         </Row>
