@@ -29,7 +29,9 @@ const MIN_MESSAGE_LENGTH = 20;
 const MAX_MESSAGE_LENGTH = 148;
 
 function SendMessage() {
-  const contacts = useAppSelector((state) => state.contacts["hydra:member"]);
+  const contacts = useAppSelector(
+    (state) => state.contacts.data["hydra:member"]
+  );
   const [charCount, setCharCount] = useState(0);
   const methods = useForm<MessageSetupFields>({
     defaultValues: {
