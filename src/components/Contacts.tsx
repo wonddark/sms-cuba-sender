@@ -39,11 +39,28 @@ function Contacts() {
             <ContactForm toggleDlg={toggleContactForm} />
           </ModalBody>
         </Modal>
-        <FormGroup>
+        <Button color="light" size="small" onClick={toggleContactForm}>
+          <i className="bi bi-plus-circle me-sm-2" />
+          <span className="d-none d-sm-inline">Nuevo</span>
+        </Button>
+        <Button color="light" size="small">
+          <i className="bi bi-pencil-square me-sm-2" />
+          <span className="d-none d-sm-inline">Editar</span>
+        </Button>
+        <Button color="light" size="small">
+          <i className="bi bi-trash3 mesm2" />
+          <span className="d-none d-sm-inline">Eliminar</span>
+        </Button>
+        <Button color="light" size="small">
+          <i className="bi bi-send me-sm-2" />
+          <span className="d-none d-sm-inline">Enviar mensaje</span>
+        </Button>
+        <FormGroup className="mt-2">
           <InputGroup>
             <Input type="search" placeholder="Nombre o teléfono" />
-            <Button color="primary" size="small" onClick={toggleContactForm}>
-              <i className="bi bi-plus-circle-fill me-2" /> Nuevo
+            <Button color="success" size="small">
+              <i className="bi bi-search me-sm-2" />
+              <span className="d-none d-sm-inline">Buscar</span>
             </Button>
           </InputGroup>
         </FormGroup>
