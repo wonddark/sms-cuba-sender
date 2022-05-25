@@ -10,7 +10,6 @@ import {
   Modal,
   ModalBody,
   ModalHeader,
-  Progress,
   Row,
 } from "reactstrap";
 import ContactForm from "./ContactsForm";
@@ -18,7 +17,7 @@ import { useGetContactsQuery } from "../store/services/api";
 import { useAppSelector } from "../hooks/store";
 
 function Contacts() {
-  const { isLoading } = useGetContactsQuery({
+  useGetContactsQuery({
     page: 1,
     itemsPerPage: 50,
   });
@@ -48,31 +47,28 @@ function Contacts() {
             </Button>
           </InputGroup>
         </FormGroup>
-        {isLoading && <Progress striped animated color="primary" />}
-        {!isLoading && (
-          <Row xs={1} md={2} xl={3}>
-            {contacts?.["hydra:member"].map((item) => (
-              <Col key={item.id} className="my-1">
-                <Card color="light" body>
-                  <Row xs={1} className="justify-content-between">
-                    <Col xs={10}>
-                      <CardText>
-                        <strong>{item.name}</strong>: {item.phone}
-                      </CardText>
-                    </Col>
-                    <Col xs={2} className="text-center">
-                      <Input
-                        type="checkbox"
-                        title="Seleccionar este contacto"
-                        style={{ cursor: "pointer" }}
-                      />
-                    </Col>
-                  </Row>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        )}
+        <Row xs={1} md={2} xl={3}>
+          {contacts?.["hydra:member"].map((item) => (
+            <Col key={item.id} className="my-1">
+              <Card color="light" body>
+                <Row xs={1} className="justify-content-between">
+                  <Col xs={10}>
+                    <CardText>
+                      <strong>{item.name}</strong>: {item.phone}
+                    </CardText>
+                  </Col>
+                  <Col xs={2} className="text-center">
+                    <Input
+                      type="checkbox"
+                      title="Seleccionar este contacto"
+                      style={{ cursor: "pointer" }}
+                    />
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+          ))}
+        </Row>
       </Col>
     </Row>
   );
