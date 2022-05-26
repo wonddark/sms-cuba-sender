@@ -12,7 +12,7 @@ function SelectedCount() {
   if (selected.length > 0) {
     return (
       <p className="py-1 px-2 mb-1 fst-italic small text-muted">
-        {selected.length} seleccionados
+        <strong>{selected.length}</strong> seleccionados
       </p>
     );
   } else {
