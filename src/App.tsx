@@ -8,6 +8,7 @@ import Contacts from "./components/Contacts";
 import Header from "./components/Header";
 import { useSelector } from "react-redux";
 import { AppState } from "./store";
+import Home from "./components/Home";
 
 function App() {
   const { currentPage, logged } = useSelector((state: AppState) => ({
@@ -30,7 +31,7 @@ function App() {
           return <Register />;
       }
     }
-    return <>Home Page</>;
+    return <Home />;
   };
   return (
     <Container fluid className="p-0">
