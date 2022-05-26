@@ -1,7 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { ContactsResponse } from "./response-types";
 import { AppState } from "../index";
-import { ContactsParams, LoginParams, RegisterParams } from "./params-types";
+import {
+  ContactsParams,
+  LoginParams,
+  MessagesParams,
+  RegisterParams,
+} from "./params-types";
 
 const api = createApi({
   reducerPath: "api",
@@ -57,6 +62,14 @@ const api = createApi({
         body: JSON.stringify(params),
       }),
     }),
+    // POST MESSAGE
+    postMessage: builder.mutation({
+      query: (params: MessagesParams) => ({
+        url: "/messages",
+        method: "POST",
+        body: JSON.stringify(params),
+      }),
+    }),
   }),
 });
 
@@ -65,5 +78,6 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useAddContactMutation,
+  usePostMessageMutation: usePostMessage,
 } = api;
 export default api;

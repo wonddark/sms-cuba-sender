@@ -13,3 +13,8 @@ export type ContactsParams = {
   name: string;
   phone: string;
 };
+
+export type MessagesParams = {
+  content: string;
+  contacts: string[];
+};

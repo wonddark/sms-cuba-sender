@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
 import * as yup from "yup";
-import apiConfig from "../api-config";
 import {
   Button,
   Card,
@@ -19,11 +18,8 @@ import {
 import Select from "react-select";
 import { toast } from "react-toastify";
 import { useAppSelector } from "../hooks/store";
-
-type MessageSetupFields = {
-  message: string;
-  recipients: string[];
-};
+import { usePostMessage } from "../store/services/api";
+import { MessagesParams } from "../store/services/params-types";
 
 const MIN_MESSAGE_LENGTH = 20;
 const MAX_MESSAGE_LENGTH = 148;
@@ -34,14 +30,14 @@ function SendMessage() {
     selectedContacts: state.contacts.selected,
   }));
   const [charCount, setCharCount] = useState(0);
-  const methods = useForm<MessageSetupFields>({
+  const methods = useForm<MessagesParams>({
     defaultValues: {
-      message: "",
-      recipients: selectedContacts.map((item) => item.id),
+      content: "",
+      contacts: selectedContacts.map((item) => item.id),
     },
     resolver: yupResolver(
       yup.object({
-        message: yup
+        content: yup
           .string()
           .required("Requerido")
           .min(
@@ -52,7 +48,7 @@ function SendMessage() {
             MAX_MESSAGE_LENGTH,
             `No más de ${MAX_MESSAGE_LENGTH} caracteres`
           ),
-        recipients: yup.array().of(yup.string().required()).required(),
+        contacts: yup.array().of(yup.string().required()).required(),
       })
     ),
     mode: "onBlur",
@@ -64,25 +60,15 @@ function SendMessage() {
     trigger,
     formState: { isValid },
   } = methods;
-  const processData = (data: MessageSetupFields) => {
+  const [runPost] = usePostMessage();
+  const processData = (data: MessagesParams) => {
     toast
-      .promise(
-        Promise.allSettled(
-          data.recipients.map((item) =>
-            apiConfig.post(
-              "/messages/create",
-              JSON.stringify({ phone: item, message_body: data.message })
-            )
-          )
-        ),
-        {
-          pending: "Procesando",
-          success: "¡Hecho!",
-          error: "Algo salió mal",
-        }
-      )
-      .then((response) => console.log(JSON.stringify(response, null, 3)))
-      .catch((error) => console.log(JSON.stringify(error, null, 3)));
+      .promise(runPost(data).unwrap(), {
+        pending: "Procesando",
+        success: "¡Hecho!",
+        error: "Algo salió mal",
+      })
+      .then(() => reset());
   };
   const cancelData = () => {
     reset();
@@ -97,7 +83,7 @@ function SendMessage() {
           <Card body color="info" outline className="rounded-3 shadow-sm">
             <Controller
               control={control}
-              name="recipients"
+              name="contacts"
               render={({ field, fieldState: { error } }) => (
                 <FormGroup>
                   <Label>Destinatario(s)</Label>
@@ -129,7 +115,7 @@ function SendMessage() {
             />
             <Controller
               control={control}
-              name="message"
+              name="content"
               render={({ field, fieldState: { error } }) => (
                 <FormGroup>
                   <Label>Mensaje</Label>
@@ -142,14 +128,14 @@ function SendMessage() {
                       setCharCount(value.length);
                       field.onChange(value);
                       value.length === MIN_MESSAGE_LENGTH &&
-                        trigger("message").finally();
+                        trigger("content").finally();
                       ((value.length < MIN_MESSAGE_LENGTH &&
                         field.value.length >= MIN_MESSAGE_LENGTH) ||
                         (value.length > MAX_MESSAGE_LENGTH &&
                           field.value.length === MAX_MESSAGE_LENGTH) ||
                         (value.length <= MAX_MESSAGE_LENGTH &&
                           field.value.length > MAX_MESSAGE_LENGTH)) &&
-                        trigger("message").finally();
+                        trigger("content").finally();
                     }}
                   />
                   {error && (
