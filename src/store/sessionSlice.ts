@@ -25,15 +25,16 @@ const sessionSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addMatcher(
-      api.endpoints.login.matchFulfilled,
-      (state, { payload }) => {
+    builder
+      .addMatcher(api.endpoints.login.matchFulfilled, (state, { payload }) => {
         state.token = payload.token;
         state.tokenRefresh = payload.refresh_token;
         state.tokenRefreshExpiration = payload.refresh_token_expiration;
         state.logged = true;
-      }
-    );
+      })
+      .addMatcher(api.endpoints.login.matchRejected, (state, { payload }) => {
+        console.log("PAYLOAD", payload);
+      });
   },
 });
 
