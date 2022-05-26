@@ -1,9 +1,11 @@
 import { Button, Modal, ModalBody, ModalHeader } from "reactstrap";
 import ContactForm from "./ContactsForm";
 import React, { useState } from "react";
-import { useAppSelector } from "../hooks/store";
+import { useAppDispatch, useAppSelector } from "../hooks/store";
+import { changePage } from "../store/pageSlice";
 
 function ContactActions() {
+  const dispatch = useAppDispatch();
   const { selectedContacts } = useAppSelector((state) => ({
     selectedContacts: state.contacts.selected,
   }));
@@ -15,6 +17,9 @@ function ContactActions() {
     selectedContacts.length === 0 || selectedContacts.length > 1;
   const disableDelete = selectedContacts.length === 0;
   const disableSend = selectedContacts.length === 0;
+  const prepareSend = () => {
+    dispatch(changePage("SEND"));
+  };
   return (
     <>
       <Modal isOpen={showContactForm} toggle={toggleContactForm} centered>
@@ -37,7 +42,12 @@ function ContactActions() {
         <i className="bi bi-trash3 mesm2" />
         <span className="d-none d-sm-inline">Eliminar</span>
       </Button>
-      <Button color="light" size="small" disabled={disableSend}>
+      <Button
+        color="light"
+        size="small"
+        disabled={disableSend}
+        onClick={prepareSend}
+      >
         <i className="bi bi-send me-sm-2" />
         <span className="d-none d-sm-inline">Enviar mensaje</span>
       </Button>
