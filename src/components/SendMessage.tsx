@@ -137,6 +137,7 @@ function SendMessage() {
                           field.value.length > MAX_MESSAGE_LENGTH)) &&
                         trigger("content").finally();
                     }}
+                    rows={7}
                   />
                   {error && (
                     <FormFeedback valid={false} className="d-block">
