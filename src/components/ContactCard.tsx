@@ -51,6 +51,7 @@ function ContactCard({
             type="checkbox"
             title="Seleccionar este contacto"
             checked={selected.some((token) => token.id === item.id)}
+            onChange={() => null}
             style={{ cursor: "pointer" }}
           />
         </Col>
