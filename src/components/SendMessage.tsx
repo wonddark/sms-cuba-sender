@@ -44,8 +44,14 @@ function SendMessage() {
         message: yup
           .string()
           .required("Requerido")
-          .min(MIN_MESSAGE_LENGTH, "No menos de 10 caracteres")
-          .max(MAX_MESSAGE_LENGTH, "No más de 10 caracteres"),
+          .min(
+            MIN_MESSAGE_LENGTH,
+            `No menos de ${MIN_MESSAGE_LENGTH} caracteres`
+          )
+          .max(
+            MAX_MESSAGE_LENGTH,
+            `No más de ${MAX_MESSAGE_LENGTH} caracteres`
+          ),
         recipients: yup.array().of(yup.string().required()).required(),
       })
     ),
