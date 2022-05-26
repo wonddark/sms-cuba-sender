@@ -11,7 +11,7 @@ const saveState = (state: ReturnType<typeof store.getState>) => {
   try {
     const stateFilter = JSON.parse(JSON.stringify(state));
     stateFilter.contacts.selected = [];
-    stateFilter.page = "HOME";
+    stateFilter.page.current = "HOME";
     delete stateFilter.api;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(stateFilter));
   } catch (e) {}
