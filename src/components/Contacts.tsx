@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Button,
-  Col,
-  FormGroup,
-  Input,
-  InputGroup,
-  Progress,
-  Row,
-} from "reactstrap";
+import { Button, Col, FormGroup, Input, InputGroup, Row } from "reactstrap";
 import { useGetContactsQuery } from "../store/services/api";
 import { useAppSelector } from "../hooks/store";
 import ContactCard from "./ContactCard";
@@ -29,7 +21,7 @@ function SelectedCount() {
 }
 
 function Contacts() {
-  const { isLoading, isFetching } = useGetContactsQuery({
+  useGetContactsQuery({
     page: 1,
     itemsPerPage: 50,
   });
@@ -38,33 +30,26 @@ function Contacts() {
   }));
   return (
     <Row xs={1} className="justify-content-center">
-      {isFetching && (
-        <Progress value="100" color="info" striped animated>
-          Actualizando
-        </Progress>
-      )}
-      {!isLoading && !isFetching && (
-        <Col>
-          <ContactActions />
-          <FormGroup className="mt-2">
-            <InputGroup>
-              <Input type="search" placeholder="Nombre o teléfono" />
-              <Button color="success" size="small">
-                <i className="bi bi-search me-sm-2" />
-                <span className="d-none d-sm-inline">Buscar</span>
-              </Button>
-            </InputGroup>
-          </FormGroup>
-          <SelectedCount />
-          <Row xs={1} md={2} xl={3}>
-            {contacts.map((item) => (
-              <Col key={item.id} className="my-1">
-                <ContactCard item={item} />
-              </Col>
-            ))}
-          </Row>
-        </Col>
-      )}
+      <Col>
+        <ContactActions />
+        <FormGroup className="mt-2">
+          <InputGroup>
+            <Input type="search" placeholder="Nombre o teléfono" />
+            <Button color="success" size="small">
+              <i className="bi bi-search me-sm-2" />
+              <span className="d-none d-sm-inline">Buscar</span>
+            </Button>
+          </InputGroup>
+        </FormGroup>
+        <SelectedCount />
+        <Row xs={1} md={2} xl={3}>
+          {contacts.map((item) => (
+            <Col key={item.id} className="my-1">
+              <ContactCard item={item} />
+            </Col>
+          ))}
+        </Row>
+      </Col>
     </Row>
   );
 }
