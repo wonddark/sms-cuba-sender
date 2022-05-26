@@ -29,14 +29,15 @@ const MIN_MESSAGE_LENGTH = 20;
 const MAX_MESSAGE_LENGTH = 148;
 
 function SendMessage() {
-  const contacts = useAppSelector(
-    (state) => state.contacts.data["hydra:member"]
-  );
+  const { contacts, selectedContacts } = useAppSelector((state) => ({
+    contacts: state.contacts.data["hydra:member"],
+    selectedContacts: state.contacts.selected,
+  }));
   const [charCount, setCharCount] = useState(0);
   const methods = useForm<MessageSetupFields>({
     defaultValues: {
       message: "",
-      recipients: [],
+      recipients: selectedContacts.map((item) => item.id),
     },
     resolver: yupResolver(
       yup.object({
@@ -98,15 +99,18 @@ function SendMessage() {
                     {...field}
                     value={contacts.filter((item) =>
                       field.value.some(
-                        (token) => token === item.phone || token === item.name
+                        (token) =>
+                          token === item["@id"] ||
+                          token === item.phone ||
+                          token === item.name
                       )
                     )}
                     options={contacts}
                     getOptionLabel={(option) => option.name}
-                    getOptionValue={(option) => option.phone}
+                    getOptionValue={(option) => option["@id"]}
                     isMulti
                     onChange={(option) =>
-                      field.onChange(option.map((item) => item.phone))
+                      field.onChange(option.map((item) => item["@id"]))
                     }
                   />
                   {error && (

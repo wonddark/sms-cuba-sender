@@ -1,28 +1,24 @@
 import { Card, CardText, Col, Input, Row } from "reactstrap";
 import React from "react";
-import { addToSelected, removeFromSelected } from "../store/contactsSlice";
+import {
+  addToSelected,
+  removeFromSelected,
+  SimpleContact,
+} from "../store/contactsSlice";
 import { useAppDispatch, useAppSelector } from "../hooks/store";
 
-function ContactCard({
-  item,
-}: {
-  item: { id: number; name: string; phone: string };
-}) {
+function ContactCard({ item }: { item: SimpleContact }) {
   const dispatch = useAppDispatch();
   const { selected } = useAppSelector((state) => ({
     selected: state.contacts.selected,
   }));
-  const selectContact = (contact: {
-    id: number;
-    name: string;
-    phone: string;
-  }) => {
+  const selectContact = (contact: SimpleContact) => {
     dispatch(addToSelected(contact));
   };
-  const deselectContact = (id: number) => {
+  const deselectContact = (id: string) => {
     dispatch(removeFromSelected(id));
   };
-  const markContact = (item: { id: number; name: string; phone: string }) => {
+  const markContact = (item: SimpleContact) => {
     if (selected.some((token) => token.id === item.id)) {
       deselectContact(item.id);
     } else {

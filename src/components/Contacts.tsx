@@ -45,7 +45,9 @@ function Contacts() {
         <Row xs={1} md={2} xl={3}>
           {contacts.map((item) => (
             <Col key={item.id} className="my-1">
-              <ContactCard item={item} />
+              <ContactCard
+                item={{ id: item["@id"], name: item.name, phone: item.phone }}
+              />
             </Col>
           ))}
         </Row>
