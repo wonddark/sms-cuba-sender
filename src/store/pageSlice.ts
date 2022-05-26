@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export type Pages = "LOGIN" | "REGISTER" | "CONTACTS" | "SEND";
+export type Pages = "HOME" | "LOGIN" | "REGISTER" | "CONTACTS" | "SEND";
 export type PageState = {
   current: Pages;
 };
