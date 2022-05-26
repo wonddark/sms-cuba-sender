@@ -10,18 +10,32 @@ import { useSelector } from "react-redux";
 import { AppState } from "./store";
 
 function App() {
-  const { currentPage } = useSelector((state: AppState) => ({
+  const { currentPage, logged } = useSelector((state: AppState) => ({
     currentPage: state.page.current,
+    logged: state.session.logged,
   }));
+  const renderView = () => {
+    if (logged) {
+      switch (currentPage) {
+        case "CONTACTS":
+          return <Contacts />;
+        case "SEND":
+          return <SendMessage />;
+      }
+    } else {
+      switch (currentPage) {
+        case "LOGIN":
+          return <Login />;
+        case "REGISTER":
+          return <Register />;
+      }
+    }
+    return <>Home Page</>;
+  };
   return (
     <Container fluid className="p-0">
       <Header />
-      <Container className="mt-3">
-        {currentPage === "SEND" && <SendMessage />}
-        {currentPage === "CONTACTS" && <Contacts />}
-        {currentPage === "LOGIN" && <Login />}
-        {currentPage === "REGISTER" && <Register />}
-      </Container>
+      <Container className="mt-3">{renderView()}</Container>
       <ToastContainer
         position="top-right"
         autoClose={2000}
