@@ -47,13 +47,11 @@ const contactsSlice = createSlice({
     addToSelected: (state, action: PayloadAction<SimpleContact>) => {
       state.selected.every((item) => item.id !== action.payload.id) &&
         state.selected.push(action.payload);
-      return state;
     },
     removeFromSelected: (state, action: PayloadAction<string>) => {
       state.selected = state.selected.filter(
         (item) => item.id !== action.payload
       );
-      return state;
     },
   },
   extraReducers: (builder) => {
@@ -61,7 +59,6 @@ const contactsSlice = createSlice({
       api.endpoints.getContacts.matchFulfilled,
       (state, { payload }) => {
         state.data = payload as unknown as ContactsData;
-        return state;
       }
     );
   },
