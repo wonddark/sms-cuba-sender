@@ -12,6 +12,7 @@ import React, { useState } from "react";
 import { changePage } from "../store/pageSlice";
 import { useAppDispatch, useAppSelector } from "../hooks/store";
 import { logout } from "../store/sessionSlice";
+import "./Header.css";
 
 function Header() {
   const dispatch = useAppDispatch();
@@ -45,20 +46,21 @@ function Header() {
     expandNav(!navExpanded);
   };
   return (
-    <header
-      className="bg-light"
-      style={{ boxShadow: "rgb(0 0 0 / 15%) 0px 0.05rem 0.5rem 0.15px" }}
-    >
+    <header style={{ boxShadow: "rgb(0 0 0 / 15%) 0px 0.05rem 0.5rem 0.15px" }}>
       <Container>
-        <Navbar light color="light" expand="lg" container={false}>
-          <NavbarBrand>SMS Cuba Send</NavbarBrand>
+        <Navbar dark expand="md" container={false} className="bg-transparent">
+          <NavbarBrand>
+            <a href="/" className="text-decoration-none text-light">
+              SMS Cuba Send
+            </a>
+          </NavbarBrand>
           <NavbarToggler onClick={toggleNav} className="ms-auto" />
           <Collapse
             navbar
             isOpen={navExpanded}
             className="ms-auto justify-content-end"
           >
-            <Nav navbar tabs>
+            <Nav navbar pills>
               {logged && (
                 <>
                   <NavItem>

@@ -1,0 +1,13 @@
+header {
+    background-image: radial-gradient(circle at left center, royalblue, slateblue, var(--bs-indigo), indigo);
+}
+
+header .nav-link {
+    color: ghostwhite !important;
+}
+
+header .nav-link.active {
+    color: var(--bs-indigo) !important;
+    background-color: ghostwhite !important;
+    border-radius: 1rem .2rem;
+}
