@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, createListenerMiddleware } from "@reduxjs/toolkit";
 import sessionReducer from "./sessionSlice";
 import pageReducer from "./pageSlice";
 import contactsReducer from "./contactsSlice";
@@ -27,6 +27,19 @@ const persistedState = (() => {
   }
 })();
 
+const listenerMiddleware = createListenerMiddleware();
+listenerMiddleware.startListening({
+  matcher: api.endpoints.addContact.matchFulfilled,
+  effect: (action, listenerApi) => {
+    listenerApi.dispatch(
+      api.endpoints.getContacts.initiate(
+        { page: 1, itemsPerPage: 50 },
+        { forceRefetch: true }
+      )
+    );
+  },
+});
+
 const store = configureStore({
   reducer: {
     session: sessionReducer,
@@ -35,7 +48,9 @@ const store = configureStore({
     [api.reducerPath]: api.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(api.middleware),
+    getDefaultMiddleware()
+      .prepend(listenerMiddleware.middleware)
+      .concat(api.middleware),
   preloadedState: persistedState,
 });
 
