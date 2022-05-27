@@ -1,4 +1,4 @@
-import { Button, Modal, ModalBody, ModalHeader } from "reactstrap";
+import { Button, Modal, ModalBody } from "reactstrap";
 import ContactForm from "./ContactsForm";
 import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/store";
@@ -23,10 +23,8 @@ function ContactActions() {
   return (
     <>
       <Modal isOpen={showContactForm} toggle={toggleContactForm} centered>
-        <ModalHeader className="bg-primary shadow-sm text-light">
-          Agregar/Editar contacto
-        </ModalHeader>
         <ModalBody>
+          <h4 className="mb-3">Agregar/Editar contacto</h4>
           <ContactForm toggleDlg={toggleContactForm} />
         </ModalBody>
       </Modal>

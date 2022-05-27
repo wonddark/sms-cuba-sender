@@ -31,7 +31,7 @@ function ContactCard({ item }: { item: SimpleContact }) {
   };
   return (
     <Card
-      color="light"
+      color="dark"
       body
       onClick={() => markContact(item)}
       style={{ cursor: "pointer" }}

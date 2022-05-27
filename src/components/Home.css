@@ -1,31 +1,48 @@
 .home-hero {
-    background-image: radial-gradient(circle at left bottom, white, whitesmoke, ghostwhite, lightgray);
+    padding-top: 2.5rem;
 }
+
+.home-hero h1 {
+    margin-bottom: .05rem;
+    font-weight: 600;
+    font-size: 2.7rem;
+}
+
+.home-hero h2 {
+    font-size: 1.25rem;
+    font-weight: 400;
+    letter-spacing: .085rem;
+    color: var(--bs-gray-300);
+    margin-bottom: 2.35rem;
+}
+
 .home-button {
-    border-color: var(--bs-indigo);
+    border-color: var(--bs-indigo) !important;
     border-radius: .5rem;
     font-weight: 600;
     font-size: calc(var(--bs-body-font-size) + 0.3rem);
-    background-image: linear-gradient(45deg, var(--bs-indigo), var(--bs-primary));
+    background-image: radial-gradient(circle at center left, mediumslateblue, #6f1ff1) !important;
 }
 
 .home-button:hover {
-    background-image: linear-gradient(45deg, #5b10d6, #0c5ed6);
+    border-color: #7a31ef !important;
+    background-image: radial-gradient(ellipse at center left, slateblue, #7021EFFF) !important;
     border-radius: .55rem;
 }
 
 .home-button-secondary {
     border-color: var(--bs-gray-300);
-    border-radius: .5rem;
+    border-radius: .5rem !important;
     font-weight: 600;
     font-size: calc(var(--bs-body-font-size) + 0.3rem);
-    color: var(--bs-indigo);
-    background-image: linear-gradient(45deg, var(--bs-gray-200), var(--bs-gray-300), var(--bs-gray-400));
+    color: var(--bs-indigo) !important;
+    background-image: radial-gradient(ellipse at center left, var(--bs-gray-100), var(--bs-gray-300)) !important;
 }
 
 .home-button-secondary:hover {
     border-color: var(--bs-gray-300);
-    background-image: linear-gradient(45deg, var(--bs-gray-300), var(--bs-gray-400));
-    color: #7933ed;
-    border-radius: .55rem;
+    background-image: radial-gradient(ellipse at center left, var(--bs-gray-200), var(--bs-gray-300)) !important;
+    color: #7933ed !important;
+    border-radius: .55rem !important;
+    box-shadow: 0 .02rem .1rem var(--bs-gray-100);
 }

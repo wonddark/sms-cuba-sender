@@ -11,7 +11,7 @@ function SelectedCount() {
   }));
   if (selected.length > 0) {
     return (
-      <p className="py-1 px-2 mb-1 fst-italic small text-muted">
+      <p className="py-1 px-2 mb-1 fst-italic small">
         <strong>{selected.length}</strong> seleccionados
       </p>
     );

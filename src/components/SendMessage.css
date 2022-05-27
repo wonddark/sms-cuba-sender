@@ -1,0 +1,9 @@
+.message-form{
+    margin-right: auto;
+    margin-left: auto;
+    border: 0.1rem solid var(--bs-indigo);
+    padding: 2.5rem;
+    box-sizing: content-box;
+    box-shadow: 0 0 25rem .7rem var(--bs-gray-800);
+    border-radius: .7rem;
+}

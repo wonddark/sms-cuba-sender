@@ -3,7 +3,6 @@ import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
 import * as yup from "yup";
 import {
   Button,
-  CardFooter,
   Form,
   FormFeedback,
   FormGroup,
@@ -14,6 +13,7 @@ import React from "react";
 import { useAddContactMutation } from "../store/services/api";
 import { toast } from "react-toastify";
 import { ContactsParams } from "../store/services/params-types";
+import "./ContactsForm.css";
 
 type ContactFields = ContactsParams & {};
 
@@ -52,7 +52,11 @@ const ContactForm = ({ toggleDlg }: { toggleDlg: () => void }) => {
     toggleDlg();
   };
   return (
-    <Form onSubmit={handleSubmit(saveContact)} onReset={resetForm}>
+    <Form
+      onSubmit={handleSubmit(saveContact)}
+      onReset={resetForm}
+      className="contact-form"
+    >
       <Controller
         control={control}
         name="name"
@@ -83,7 +87,7 @@ const ContactForm = ({ toggleDlg }: { toggleDlg: () => void }) => {
           </FormGroup>
         )}
       />
-      <CardFooter className="p-0 border-0 bg-transparent text-end">
+      <div className="text-end">
         <Button
           type="reset"
           size="sm"
@@ -101,7 +105,7 @@ const ContactForm = ({ toggleDlg }: { toggleDlg: () => void }) => {
         >
           <i className="bi bi-check-circle-fill me-2" /> Guardar
         </Button>
-      </CardFooter>
+      </div>
     </Form>
   );
 };

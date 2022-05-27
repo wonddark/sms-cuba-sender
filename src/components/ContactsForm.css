@@ -1,0 +1,15 @@
+.modal-content {
+    max-width: 400px;
+    margin-right: auto;
+    margin-left: auto;
+    border-radius: 0.7rem !important;
+    box-shadow: 0 0 50rem .9rem var(--bs-gray-800);
+    background-image: radial-gradient(circle at center left, royalblue, var(--bs-indigo), indigo);
+}
+
+.modal-body {
+    padding: 2.5rem !important;
+}
+
+.contact-form {
+}

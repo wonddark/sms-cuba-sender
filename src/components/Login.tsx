@@ -1,8 +1,5 @@
 import {
   Button,
-  Card,
-  CardFooter,
-  CardHeader,
   Col,
   Form,
   FormFeedback,
@@ -19,6 +16,7 @@ import { toast } from "react-toastify";
 import { useAppDispatch } from "../hooks/store";
 import { changePage } from "../store/pageSlice";
 import { useLoginMutation } from "../store/services/api";
+import "./Login.css";
 
 type LoginFields = {
   username: string;
@@ -60,49 +58,43 @@ function Login() {
     dispatch(changePage("REGISTER"));
   };
   return (
-    <Form onSubmit={handleSubmit(validateData)}>
+    <Form onSubmit={handleSubmit(validateData)} className="login-form">
       <Row xs={1} className="justify-content-center">
         <Col>
-          <CardHeader className="mb-3 bg-info rounded-2 shadow-sm text-white">
-            Inicia sesión
-          </CardHeader>
-          <Card body color="info" outline className="rounded-3 shadow-sm">
-            <Controller
-              control={control}
-              name="username"
-              render={({ field, fieldState: { error } }) => (
-                <FormGroup>
-                  <Label>Username</Label>
-                  <Input {...field} type="text" required />
-                  {error && (
-                    <FormFeedback valid={false} className="d-block">
-                      {error.message}
-                    </FormFeedback>
-                  )}
-                </FormGroup>
-              )}
-            />
-            <Controller
-              control={control}
-              name="password"
-              render={({ field, fieldState: { error } }) => (
-                <FormGroup>
-                  <Label>Contraseña</Label>
-                  <Input {...field} type="password" required />
-                  {error && (
-                    <FormFeedback valid={false} className="d-block">
-                      {error.message}
-                    </FormFeedback>
-                  )}
-                </FormGroup>
-              )}
-            />
-          </Card>
-          <CardFooter className="mt-3 text-end bg-info rounded-2 shadow-sm">
+          <h4 className="mb-3">Inicia sesión</h4>
+          <Controller
+            control={control}
+            name="username"
+            render={({ field, fieldState: { error } }) => (
+              <FormGroup>
+                <Label>Username</Label>
+                <Input {...field} type="text" required />
+                {error && (
+                  <FormFeedback valid={false} className="d-block">
+                    {error.message}
+                  </FormFeedback>
+                )}
+              </FormGroup>
+            )}
+          />
+          <Controller
+            control={control}
+            name="password"
+            render={({ field, fieldState: { error } }) => (
+              <FormGroup>
+                <Label>Contraseña</Label>
+                <Input {...field} type="password" required />
+                {error && (
+                  <FormFeedback valid={false} className="d-block">
+                    {error.message}
+                  </FormFeedback>
+                )}
+              </FormGroup>
+            )}
+          />
+          <div className="text-end">
             <Button
               type="button"
-              color="info"
-              size="sm"
               className="border-0 me-2"
               onClick={switchToRegister}
               disabled={isLoading}
@@ -110,16 +102,11 @@ function Login() {
               <i className="bi bi-plus-circle me-2" />
               Crear cuenta
             </Button>
-            <Button
-              type="submit"
-              color="light"
-              size="sm"
-              disabled={!isValid || isLoading}
-            >
+            <Button type="submit" disabled={!isValid || isLoading}>
               <i className="bi bi-check-circle-fill me-2" />
               Entrar
             </Button>
-          </CardFooter>
+          </div>
         </Col>
       </Row>
     </Form>
