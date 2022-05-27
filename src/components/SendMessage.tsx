@@ -103,6 +103,9 @@ function SendMessage() {
                   onChange={(option) =>
                     field.onChange(option.map((item) => item["@id"]))
                   }
+                  styles={{
+                    menuList: (base) => ({ ...base, color: "black" }),
+                  }}
                 />
                 {error && (
                   <FormFeedback valid={false} className="d-block">
