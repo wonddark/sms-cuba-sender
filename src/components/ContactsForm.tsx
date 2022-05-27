@@ -45,7 +45,7 @@ const ContactForm = ({ toggleDlg }: { toggleDlg: () => void }) => {
         success: "¡Hecho!",
         error: "Algo aha salido mal, or favor inténtalo de nuevo",
       })
-      .then(() => toggleDlg());
+      .then(() => reset());
   };
   const resetForm = () => {
     reset();
