@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import api from "./services/api";
 
 interface SessionState {
@@ -17,6 +17,9 @@ const sessionSlice = createSlice({
   name: "session",
   initialState,
   reducers: {
+    refreshToken: (state, action: PayloadAction<{ token: string }>) => {
+      state.token = action.payload.token;
+    },
     logout: (state) => {
       state.token = "";
       state.tokenRefresh = "";
@@ -38,5 +41,5 @@ const sessionSlice = createSlice({
   },
 });
 
-export const { logout } = sessionSlice.actions;
+export const { refreshToken, logout } = sessionSlice.actions;
 export default sessionSlice.reducer;
