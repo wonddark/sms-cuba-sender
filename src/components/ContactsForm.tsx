@@ -27,7 +27,10 @@ const ContactForm = ({ toggleDlg }: { toggleDlg: () => void }) => {
     resolver: yupResolver(
       yup.object({
         name: yup.string().required("Requerido"),
-        phone: yup.string().required("Requerido"),
+        phone: yup
+          .string()
+          .required("Requerido")
+          .length(8, "Exactamente 8 dígitos"),
       })
     ),
     mode: "onChange",
