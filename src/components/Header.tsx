@@ -49,11 +49,7 @@ function Header() {
     <header style={{ boxShadow: "rgb(0 0 0 / 15%) 0px 0.05rem 0.5rem 0.15px" }}>
       <Container>
         <Navbar dark expand="md" container={false} className="bg-transparent">
-          <NavbarBrand>
-            <a href="/" className="text-decoration-none text-light">
-              SMS Cuba Send
-            </a>
-          </NavbarBrand>
+          <NavbarBrand href="/">SMS Cuba Send</NavbarBrand>
           <NavbarToggler onClick={toggleNav} className="ms-auto" />
           <Collapse
             navbar
