@@ -15,7 +15,9 @@ import {
   RegisterParams,
 } from "./params-types";
 import { logout, refreshToken } from "../sessionSlice";
+import { Mutex } from "async-mutex";
 
+const mutex = new Mutex();
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.REACT_APP_BASE_API,
   prepareHeaders: (headers, { getState }) => {
@@ -34,29 +36,42 @@ const baseQueryWithReAuth: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
+  await mutex.waitForUnlock();
   let result = await baseQuery(args, api, extraOptions);
   if (result.error && result.error.status === 401) {
-    const refreshResult = await baseQuery(
-      {
-        url: "/refresh",
-        method: "POST",
-        body: {
-          refresh_token: (
-            api.getState() as { session: { tokenRefresh: string } }
-          ).session.tokenRefresh,
-        },
-        headers: { "Content-Type": "application/json" },
-      },
-      api,
-      extraOptions
-    );
-    if (refreshResult.data) {
-      api.dispatch(
-        refreshToken({ token: (refreshResult.data as { token: string }).token })
-      );
-      result = await baseQuery(args, api, extraOptions);
+    if (!mutex.isLocked()) {
+      const release = await mutex.acquire();
+      try {
+        const refreshResult = await baseQuery(
+          {
+            url: "/refresh",
+            method: "POST",
+            body: {
+              refresh_token: (
+                api.getState() as { session: { tokenRefresh: string } }
+              ).session.tokenRefresh,
+            },
+            headers: { "Content-Type": "application/json" },
+          },
+          api,
+          extraOptions
+        );
+        if (refreshResult.data) {
+          api.dispatch(
+            refreshToken({
+              token: (refreshResult.data as { token: string }).token,
+            })
+          );
+          result = await baseQuery(args, api, extraOptions);
+        } else {
+          api.dispatch(logout());
+        }
+      } finally {
+        release();
+      }
     } else {
-      api.dispatch(logout());
+      await mutex.waitForUnlock();
+      result = await baseQuery(args, api, extraOptions);
     }
   }
   return result;
