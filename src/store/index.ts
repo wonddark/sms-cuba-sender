@@ -31,12 +31,12 @@ const listenerMiddleware = createListenerMiddleware();
 listenerMiddleware.startListening({
   matcher: api.endpoints.addContact.matchFulfilled,
   effect: (action, listenerApi) => {
-    listenerApi.dispatch(
+    /*listenerApi.dispatch(
       api.endpoints.getContacts.initiate(
         { page: 1, itemsPerPage: 50 },
         { forceRefetch: true }
       )
-    );
+    );*/
   },
 });
 

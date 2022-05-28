@@ -23,6 +23,7 @@ const api = createApi({
       return headers;
     },
   }),
+  tagTypes: ["CONTACTS", "MESSAGES"],
   endpoints: (builder) => ({
     // LOGIN
     login: builder.mutation({
@@ -53,6 +54,7 @@ const api = createApi({
         url: "/contacts",
         params: { page: params.page, itemsPerPage: params.itemsPerPage },
       }),
+      providesTags: (result, error) => (result ? ["CONTACTS"] : []),
     }),
     // POST CONTACT
     addContact: builder.mutation({
@@ -61,6 +63,7 @@ const api = createApi({
         method: "POST",
         body: JSON.stringify(params),
       }),
+      invalidatesTags: ["CONTACTS"],
     }),
     // POST MESSAGE
     postMessage: builder.mutation({
