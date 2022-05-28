@@ -18,3 +18,7 @@ export type MessagesParams = {
   content: string;
   contacts: string[];
 };
+
+export type RefreshTokenParams = {
+  refresh_token: string;
+};

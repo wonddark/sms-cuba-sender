@@ -5,6 +5,7 @@ import {
   ContactsParams,
   LoginParams,
   MessagesParams,
+  RefreshTokenParams,
   RegisterParams,
 } from "./params-types";
 
@@ -37,6 +38,18 @@ const api = createApi({
         },
       }),
     }),
+    // REFRESH TOKEN
+    refreshToken: builder.mutation({
+      query: (params: RefreshTokenParams) => ({
+        url: "/refresh",
+        method: "POST",
+        body: params,
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }),
+    }),
     // REGISTER
     register: builder.mutation({
       query: (params: RegisterParams) => ({
@@ -54,7 +67,7 @@ const api = createApi({
         url: "/contacts",
         params: { page: params.page, itemsPerPage: params.itemsPerPage },
       }),
-      providesTags: (result, error) => (result ? ["CONTACTS"] : []),
+      providesTags: (result) => (result ? ["CONTACTS"] : []),
     }),
     // POST CONTACT
     addContact: builder.mutation({
