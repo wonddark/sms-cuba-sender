@@ -1,4 +1,10 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
+import {
+  BaseQueryFn,
+  createApi,
+  FetchArgs,
+  fetchBaseQuery,
+  FetchBaseQueryError,
+} from "@reduxjs/toolkit/dist/query/react";
 import { ContactsResponse } from "./response-types";
 import { AppState } from "../index";
 import {
@@ -8,22 +14,56 @@ import {
   RefreshTokenParams,
   RegisterParams,
 } from "./params-types";
+import { logout, refreshToken } from "../sessionSlice";
 
+const baseQuery = fetchBaseQuery({
+  baseUrl: process.env.REACT_APP_BASE_API,
+  prepareHeaders: (headers, { getState }) => {
+    const token = (getState() as AppState).session.token;
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+    !headers.has("Content-Type") &&
+      headers.set("Content-Type", "application/ld+json");
+    !headers.has("Accept") && headers.set("Accept", "application/ld+json");
+    return headers;
+  },
+});
+const baseQueryWithReAuth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  let result = await baseQuery(args, api, extraOptions);
+  if (result.error && result.error.status === 401) {
+    const refreshResult = await baseQuery(
+      {
+        url: "/refresh",
+        method: "POST",
+        body: {
+          refresh_token: (
+            api.getState() as { session: { tokenRefresh: string } }
+          ).session.tokenRefresh,
+        },
+        headers: { "Content-Type": "application/json" },
+      },
+      api,
+      extraOptions
+    );
+    if (refreshResult.data) {
+      api.dispatch(
+        refreshToken({ token: (refreshResult.data as { token: string }).token })
+      );
+      result = await baseQuery(args, api, extraOptions);
+    } else {
+      api.dispatch(logout());
+    }
+  }
+  return result;
+};
 const api = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({
-    baseUrl: process.env.REACT_APP_BASE_API,
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as AppState).session.token;
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      !headers.has("Content-Type") &&
-        headers.set("Content-Type", "application/ld+json");
-      !headers.has("Accept") && headers.set("Accept", "application/ld+json");
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithReAuth,
   tagTypes: ["CONTACTS", "MESSAGES"],
   endpoints: (builder) => ({
     // LOGIN
