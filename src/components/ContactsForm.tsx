@@ -10,7 +10,7 @@ import {
   Label,
 } from "reactstrap";
 import React from "react";
-import { useAddContactMutation } from "../store/services/api";
+import { useCreateContact } from "../store/services/api";
 import { toast } from "react-toastify";
 import { ContactsParams } from "../store/services/params-types";
 import "./ContactsForm.css";
@@ -18,7 +18,7 @@ import "./ContactsForm.css";
 type ContactFields = ContactsParams & {};
 
 const ContactForm = ({ toggleDlg }: { toggleDlg: () => void }) => {
-  const [runAddContact, { isLoading }] = useAddContactMutation();
+  const [runAddContact, { isLoading }] = useCreateContact();
   const methods = useForm<ContactFields>({
     defaultValues: {
       name: "",

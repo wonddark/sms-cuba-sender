@@ -148,7 +148,7 @@ export const {
   useGetContactsQuery,
   useLoginMutation,
   useRegisterMutation,
-  useAddContactMutation,
+  useAddContactMutation: useCreateContact,
   usePostMessageMutation: usePostMessage,
 } = api;
 export default api;
