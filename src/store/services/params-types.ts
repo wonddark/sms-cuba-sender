@@ -14,6 +14,11 @@ export type ContactsParams = {
   phone: string;
 };
 
+export type EditContactsParams = {
+  name?: string;
+  phone?: string;
+};
+
 export type MessagesParams = {
   content: string;
   contacts: string[];
