@@ -98,7 +98,7 @@ const ContactForm = ({ toggleDlg }: { toggleDlg: () => void }) => {
           className="me-2"
           disabled={isLoading}
         >
-          <i className="bi bi-x-circle-fill me-2" /> Cancelar
+          <i className="bi bi-x-circle-fill me-2" /> Cerrar
         </Button>
         <Button
           type="submit"
