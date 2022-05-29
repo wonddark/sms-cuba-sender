@@ -9,6 +9,7 @@ import { ContactsResponse } from "./response-types";
 import { AppState } from "../index";
 import {
   ContactsParams,
+  EditContactsParams,
   LoginParams,
   MessagesParams,
   RefreshTokenParams,
@@ -133,6 +134,17 @@ const api = createApi({
       }),
       invalidatesTags: ["CONTACTS"],
     }),
+    editContact: builder.mutation({
+      query: (params: { id: string; data: EditContactsParams }) => ({
+        url: `/contacts/${params.id}`,
+        method: "PATCH",
+        body: JSON.stringify(params.data),
+        headers: {
+          "Content-Type": "application/merge-patch+json",
+        },
+      }),
+      invalidatesTags: ["CONTACTS"],
+    }),
     // POST MESSAGE
     postMessage: builder.mutation({
       query: (params: MessagesParams) => ({
@@ -149,6 +161,7 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useAddContactMutation: useCreateContact,
+  useEditContactMutation: useEditContact,
   usePostMessageMutation: usePostMessage,
 } = api;
 export default api;
