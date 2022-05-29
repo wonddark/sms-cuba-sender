@@ -55,12 +55,24 @@ const contactsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addMatcher(
-      api.endpoints.getContacts.matchFulfilled,
-      (state, { payload }) => {
-        state.data = payload as unknown as ContactsData;
-      }
-    );
+    builder
+      .addMatcher(
+        api.endpoints.getContacts.matchFulfilled,
+        (state, { payload }) => {
+          state.data = payload as unknown as ContactsData;
+        }
+      )
+      .addMatcher(
+        api.endpoints.editContact.matchFulfilled,
+        (state, { payload }) => {
+          state.selected = state.selected.map((item) => {
+            if (item.id === payload["@id"]) {
+              return { ...item, name: payload.name, phone: payload.phone };
+            }
+            return item;
+          });
+        }
+      );
   },
 });
 
