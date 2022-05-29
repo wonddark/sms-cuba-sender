@@ -10,8 +10,17 @@ function ContactActions() {
     selectedContacts: state.contacts.selected,
   }));
   const [showContactForm, setShowContactForm] = useState(false);
+  const [action, setAction] = useState<"CREATE" | "EDIT">("CREATE");
   const toggleContactForm = () => {
     setShowContactForm(!showContactForm);
+  };
+  const createContact = () => {
+    setAction("CREATE");
+    toggleContactForm();
+  };
+  const editContact = () => {
+    setAction("EDIT");
+    toggleContactForm();
   };
   const disableEdit =
     selectedContacts.length === 0 || selectedContacts.length > 1;
@@ -22,17 +31,24 @@ function ContactActions() {
   };
   return (
     <>
-      <Modal isOpen={showContactForm} toggle={toggleContactForm} centered>
-        <ModalBody>
-          <h4 className="mb-3">Agregar/Editar contacto</h4>
-          <ContactForm toggleDlg={toggleContactForm} />
-        </ModalBody>
-      </Modal>
-      <Button color="light" size="small" onClick={toggleContactForm}>
+      {showContactForm && (
+        <Modal isOpen={showContactForm} toggle={toggleContactForm} centered>
+          <ModalBody>
+            <h4 className="mb-3">Agregar/Editar contacto</h4>
+            <ContactForm toggleDlg={toggleContactForm} action={action} />
+          </ModalBody>
+        </Modal>
+      )}
+      <Button color="light" size="small" onClick={createContact}>
         <i className="bi bi-plus-circle me-sm-2" />
         <span className="d-none d-sm-inline">Nuevo</span>
       </Button>
-      <Button color="light" size="small" disabled={disableEdit}>
+      <Button
+        color="light"
+        size="small"
+        disabled={disableEdit}
+        onClick={editContact}
+      >
         <i className="bi bi-pencil-square me-sm-2" />
         <span className="d-none d-sm-inline">Editar</span>
       </Button>

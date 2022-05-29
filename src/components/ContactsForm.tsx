@@ -9,20 +9,43 @@ import {
   Input,
   Label,
 } from "reactstrap";
-import React from "react";
-import { useCreateContact } from "../store/services/api";
+import React, { useEffect, useState } from "react";
+import { useCreateContact, useEditContact } from "../store/services/api";
 import { toast } from "react-toastify";
 import { ContactsParams } from "../store/services/params-types";
 import "./ContactsForm.css";
+import { useAppSelector } from "../hooks/store";
 
-type ContactFields = ContactsParams & {};
+type ContactFields = ContactsParams & { id?: string };
 
-const ContactForm = ({ toggleDlg }: { toggleDlg: () => void }) => {
-  const [runAddContact, { isLoading }] = useCreateContact();
+const ContactForm = ({
+  toggleDlg,
+  action,
+}: {
+  toggleDlg: () => void;
+  action: "CREATE" | "EDIT";
+}) => {
+  const [runAddContact, { isLoading: isCreating }] = useCreateContact();
+  const [runEditContact, { isLoading: isUpdating }] = useEditContact();
+  const [disableInputs, setDisableInputs] = useState(false);
+  const selectedContact = useAppSelector((state) => {
+    if (state.contacts.selected.length === 1) {
+      return state.contacts.selected[0];
+    }
+    return undefined;
+  });
   const methods = useForm<ContactFields>({
     defaultValues: {
-      name: "",
-      phone: "",
+      name:
+        action === "EDIT" && selectedContact?.name ? selectedContact.name : "",
+      phone:
+        action === "EDIT" && selectedContact?.phone
+          ? selectedContact.phone
+          : "",
+      id:
+        action === "EDIT" && selectedContact?.id
+          ? selectedContact.id
+          : undefined,
     },
     resolver: yupResolver(
       yup.object({
@@ -43,17 +66,29 @@ const ContactForm = ({ toggleDlg }: { toggleDlg: () => void }) => {
   } = methods;
   const saveContact = (data: ContactFields) => {
     toast
-      .promise(runAddContact(data).unwrap(), {
-        pending: "Procesando",
-        success: "¡Hecho!",
-        error: "Algo aha salido mal, or favor inténtalo de nuevo",
-      })
-      .then(() => reset());
+      .promise(
+        data.id
+          ? runEditContact({
+              id: data.id.split("/").pop()!!,
+              data,
+            }).unwrap()
+          : runAddContact(data).unwrap(),
+        {
+          pending: "Procesando",
+          success: "¡Hecho!",
+          error: "Algo ha salido mal, por favor inténtalo de nuevo",
+        }
+      )
+      .then(() => (data.id ? toggleDlg() : reset()));
   };
   const resetForm = () => {
     reset();
     toggleDlg();
   };
+  const toggleInputsDisable = () => {
+    setDisableInputs(isCreating || isUpdating);
+  };
+  useEffect(toggleInputsDisable, [isCreating, isUpdating]);
   return (
     <Form
       onSubmit={handleSubmit(saveContact)}
@@ -66,7 +101,7 @@ const ContactForm = ({ toggleDlg }: { toggleDlg: () => void }) => {
         render={({ field, fieldState: { error } }) => (
           <FormGroup>
             <Label>Nombre</Label>
-            <Input {...field} disabled={isLoading} />
+            <Input {...field} disabled={disableInputs} />
             {error && (
               <FormFeedback valid={false} className="d-block">
                 {error.message}
@@ -81,7 +116,7 @@ const ContactForm = ({ toggleDlg }: { toggleDlg: () => void }) => {
         render={({ field, fieldState: { error } }) => (
           <FormGroup>
             <Label>Teléfono</Label>
-            <Input {...field} type="tel" disabled={isLoading} />
+            <Input {...field} type="tel" disabled={disableInputs} />
             {error && (
               <FormFeedback valid={false} className="d-block">
                 {error.message}
@@ -96,7 +131,7 @@ const ContactForm = ({ toggleDlg }: { toggleDlg: () => void }) => {
           size="sm"
           color="secondary"
           className="me-2"
-          disabled={isLoading}
+          disabled={disableInputs}
         >
           <i className="bi bi-x-circle-fill me-2" /> Cerrar
         </Button>
@@ -104,7 +139,7 @@ const ContactForm = ({ toggleDlg }: { toggleDlg: () => void }) => {
           type="submit"
           size="sm"
           color="primary"
-          disabled={!isValid || isLoading}
+          disabled={!isValid || disableInputs}
         >
           <i className="bi bi-check-circle-fill me-2" /> Guardar
         </Button>
